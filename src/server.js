@@ -22,10 +22,15 @@ const server = http.createServer(app);
 // websocket 서버 열기
 const wss = new WebSocket.Server({ server }); // server를 넣어줌은 두 개의 서버를 다 돌리기 위함(필수 아님)
 
-function handleConnection(socket) {
-  console.log(socket);
-}
+const sockets = [];
 
-wss.on("connection", handleConnection);
+wss.on("connection", (socket) => {
+  sockets.push(socket);
+  console.log("Connected to Browser✅");
+  socket.on("close", () => console.log("Disconneted from the Browser"));
+  socket.on("message", (message) => {
+    sockets.forEach((aSocket) => aSocket.send(message.toString()));
+  });
+});
 
 server.listen(PORT, handleListen);
