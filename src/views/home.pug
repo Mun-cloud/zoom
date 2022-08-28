@@ -10,8 +10,19 @@ html(lang="en")
         header 
             h1 Noom
         main 
-            ul
-            form
-                input(type="text", placeholder="write a msg", required="required")
-                button Send
+            div#welcome
+                form
+                    input(placeholder="방 이름", required, type="text")    
+                    button 방 입장
+            div#room 
+                h3
+                ul 
+                form#name
+                    input(placeholder="닉네임 입력", required, type="text")
+                    button 저장
+                form#msg
+                    input(placeholder="메세지 입력", required, type="text")
+                    button 전송
+        //- 브라우저에 socketIO 설치
+        script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
