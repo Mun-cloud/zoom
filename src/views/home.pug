@@ -10,10 +10,11 @@ html(lang="en")
         header 
             h1 Noom
         main 
-        div#myStream
-            video#myFace(autoplay,playsinline,width="400",height="400")
-            button#mute Mute
-            button#camera Turn Camera Off
+            div#myStream(style="margin-left:300px")
+             video#myFace(autoplay,playsinline,width="400",height="400")
+             button#mute Mute
+              button#camera Turn Camera Off
+              select#cameras
         //- 브라우저에 socketIO 설치
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
