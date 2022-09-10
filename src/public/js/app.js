@@ -137,17 +137,30 @@ socket.on("answer", (answer) => {
   myPeerConnection.setRemoteDescription(answer);
 });
 
+socket.on("ice", (ice) => {
+  console.log("received candidate");
+  myPeerConnection.addIceCandidate(ice);
+});
+
 // RTC Code
 
 function makeConnection() {
   myPeerConnection = new RTCPeerConnection();
+  // myPeerConnection이 호출될 때마다 이벤트 발생하는 듯
   myPeerConnection.addEventListener("icecandidate", hadleIce);
+  // offer또는answer를 받고 setRemoteDescription이 호출될 때 이벤트 발생하는 듯
+  myPeerConnection.addEventListener("addstream", handleAddStream);
   myStream
     .getTracks()
     .forEach((track) => myPeerConnection.addTrack(track, myStream));
 }
 
 function hadleIce(data) {
-  console.log("got ice candidate");
-  console.log(data);
+  console.log("sent candidate");
+  socket.emit("ice", data.candidate, roomName);
+}
+
+function handleAddStream(data) {
+  const peerFace = document.getElementById("peerFace");
+  peerFace.srcObject = data.stream;
 }
