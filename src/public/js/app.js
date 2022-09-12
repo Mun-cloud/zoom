@@ -85,6 +85,7 @@ async function handleCameraChange() {
   await getMedia(deviceIdcamerasSelect.value);
   if (myPeerConnection) {
     const videoTrack = myStream.getVideoTracks()[0];
+    // sender는 다른 브라우저로 보내진 비디오와 오디오 데이터를 컨트롤함
     const videoSender = myPeerConnection
       .getSenders()
       .find((sender) => sender.track.kind === "video");
@@ -152,7 +153,19 @@ socket.on("ice", (ice) => {
 // RTC Code
 
 function makeConnection() {
-  myPeerConnection = new RTCPeerConnection();
+  myPeerConnection = new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: [
+          "stun:stun.l.google.com:19302",
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+          "stun:stun3.l.google.com:19302",
+          "stun:stun4.l.google.com:19302",
+        ],
+      },
+    ],
+  });
   // myPeerConnection이 호출될 때마다 이벤트 발생하는 듯
   myPeerConnection.addEventListener("icecandidate", hadleIce);
   // offer또는answer를 받고 setRemoteDescription이 호출될 때 이벤트 발생하는 듯
