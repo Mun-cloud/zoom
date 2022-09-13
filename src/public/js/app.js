@@ -13,6 +13,7 @@ let muted = false;
 let cameraOff = false;
 let roomName;
 let myPeerConnection;
+let myDataChannel;
 
 async function getCameras() {
   try {
@@ -123,6 +124,8 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 // Socket Code
 
 socket.on("welcome", async () => {
+  myDataChannel = myPeerConnection.createDataChannel("chat");
+  myDataChannel.addEventListener("message", console.log);
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
   console.log("sent the offer");
@@ -130,6 +133,10 @@ socket.on("welcome", async () => {
 });
 
 socket.on("offer", async (offer) => {
+  myPeerConnection.addEventListener("datachannel", (event) => {
+    myDataChannel = event.channel;
+    myDataChannel.addEventListener("message".console.log);
+  });
   console.log("received the offer");
   // myPeerConnection가 준비되기 전에 시작되어서 오류발생함.
   // 따라서 방에 입장할 때 바로 비동기로 initCall 실행
@@ -153,6 +160,7 @@ socket.on("ice", (ice) => {
 // RTC Code
 
 function makeConnection() {
+  // stun 서버 설정(google 무료 서버 사용중)
   myPeerConnection = new RTCPeerConnection({
     iceServers: [
       {
